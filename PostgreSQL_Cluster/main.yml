@@ -1,0 +1,12 @@
+---
+# This Playbook will create PostgreSQL cluster with etcd, patroni and HAProxy
+
+- hosts: all
+  roles:
+    - etcd
+    - patroni
+    - PostgreSQL
+
+- hosts: server1
+  roles:
+  - role: HAProxy

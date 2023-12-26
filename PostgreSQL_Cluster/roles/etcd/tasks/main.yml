@@ -1,0 +1,28 @@
+---
+
+- name: update repository index
+  apt:
+    update_cache: yes
+  become: true
+- name: install etcd package
+  apt:
+    name: etcd
+    state: latest
+  become: true
+- name: etcd config
+  block:
+    - name: etcd configuration file
+      template:
+        src: etc/etcd
+        dest: /etc/etcd2
+    - name: etcd service configuration file
+      template:
+        src: etc/systemd/system/etcd.service
+        dest: /etc/systemd/system/etcd.service2
+  become: true
+  notify: restart daemon and etcd
+- name: start etcd
+  service:
+    name: etcd
+    state: started
+  

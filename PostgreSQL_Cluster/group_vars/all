@@ -1,0 +1,15 @@
+#list hosts for cluster
+host1: 192.168.1.11
+host2: 192.168.1.12
+host3: 192.168.1.13
+
+#etcd 
+etcd_client_port: 2379
+etcd_peer_port: 2380
+
+#PostgreSQL
+
+#HAProxy
+
+#Patroni
+

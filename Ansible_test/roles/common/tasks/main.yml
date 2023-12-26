@@ -1,0 +1,5 @@
+---
+
+- name: install the package
+  become: true
+  package: name=wireshark state=latest update_cache=yes

@@ -1,0 +1,11 @@
+---
+
+- hosts: all 
+  roles:
+    - role: common
+#- hosts: first_server
+#  roles:
+#    - role: first
+#- hosts: second_server
+#    - role: second
+
