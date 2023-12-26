@@ -1,3 +1,0 @@
-inventory_hostname: {{ inventory_hostname }}
-ansible_host: {{ ansible_host }}
-default ipv4: {{ ansible_default_ipv4.address }}

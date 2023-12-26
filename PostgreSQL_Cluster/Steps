@@ -1,9 +1,0 @@
-ETCD:
-
-1. Install etcd
-2. copy etcd config to /etc/etcd to all servers
-3. copy /etc/systemd/system/etcd.service config
-4. 
-systemctl daemon-reload
-systemctl enable etcd
-service etcd start
