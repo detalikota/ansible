@@ -4,8 +4,11 @@
 - hosts: all
   roles:
     - etcd
-    - patroni
-    - PostgreSQL
+
+- hosts: all
+  serial: 1
+  roles:
+    - db_patroni
 
 - hosts: server1
   roles:

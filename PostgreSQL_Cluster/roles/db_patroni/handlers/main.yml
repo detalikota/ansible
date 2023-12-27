@@ -1,0 +1,47 @@
+---
+
+
+#- name: restart postgresql and patroni
+#  block: 
+#    - name: stop postgresql and patroni
+#      service:
+#        name: postgresql
+#        enabled: yes
+#        state: stopped
+#    - name: start postgresql and patroni
+#      systemd_service:
+#        name: "{{ items }}"
+#        state: started
+#      with_item:
+#        - patroni
+#        - postgresql
+#      pause:
+#        seconds: 30
+#      when: mark == "host1"
+
+- name: stop db
+  service:
+    name: postgresql
+    enabled: yes
+    state: stopped
+  listen: actions
+- name: restart patroni
+  systemd_service:
+    name: patroni
+    state: started
+  listen: actions
+- name: restart db
+  systemd_service:
+    name: postgresql
+    state: started
+  listen: actions
+- name: pause
+  pause:
+    seconds: 30
+  when: mark == "host1"
+  listen: actions
+
+
+#  pause:
+#    seconds: 30
+#  when: mark == "host1"

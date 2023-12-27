@@ -1,0 +1,38 @@
+---
+
+- name: install postgresql postgresql-contrib python3-pip libpq-dev
+  become_user: root
+  apt:
+    name:
+    - postgresql
+    - postgresql-contrib
+    - python3-pip
+    - libpq-dev
+    state: latest
+  
+- name: install pip psycop2 patroni[etcd]
+  become_user: root
+  shell: |
+    pip3 install --upgrade pip
+    pip install psycop2
+    pip install patroni[etcd]
+- name: make /data/patroni directory
+  file:
+    path: /data/patroni2
+    state: directory
+    mode: '0700'
+    owner: postgres
+    group: postgres
+- name: patroni service and patroni.yml configs
+  block:
+    - name: etc/systemd/system/patroni.service config
+      template:
+        src: etc/systemd/system/patroni.service
+        dest: /etc/systemd/system/patroni.service2
+    - name: etc/patroni.yml config
+      template:
+        src: etc/patroni.yml
+        dest: /etc/patroni.yml2
+  notify: actions
+  
+
