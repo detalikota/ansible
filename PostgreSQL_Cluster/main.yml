@@ -12,4 +12,4 @@
 
 - hosts: server1
   roles:
-  - role: HAProxy
+  - HAProxy

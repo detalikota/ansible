@@ -1,0 +1,23 @@
+- name: remove container
+  docker_container:
+    name: my-haproxy
+    state: absent
+    listen: restart container
+
+- name: building image
+  docker_image:
+    name: my-haproxy
+    build: 
+      path: /home/maga/Docker
+    source: build
+    listen: restart container
+
+- name: start container
+  docker_container:
+    name: my-haproxy
+    image: my-haproxy
+    detach: yes
+    ports:
+      - "5000:5000"
+      - "7000:7000"
+    listen: restart container
