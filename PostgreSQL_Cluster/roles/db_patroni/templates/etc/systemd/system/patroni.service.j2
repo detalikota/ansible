@@ -5,8 +5,8 @@ After=syslog.target network.target
 [Service]
 Type=simple
 
-User=postgres
-Group=postgres
+User={{ patroni_user }}
+Group={{ patroni_group }}
 
 ExecStart=/usr/local/bin/patroni /etc/patroni.yml
 

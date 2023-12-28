@@ -1,13 +1,13 @@
 scope: pgsql # должно быть одинаковым на всех нодах
 namespace: /cluster/ # должно быть одинаковым на всех нодах
-name: postgres1 # должно быть разным на всех нодах
+name: {{ name_in_cluster }} # должно быть разным на всех нодах
 
 restapi:
-    listen: 192.168.1.11:8008 # адрес той ноды, в которой находится этот файл
-    connect_address: 192.168.1.11:8008 # адрес той ноды, в которой находится этот файл
+    listen: {{ ansible_default_ipv4.address }}:8008 # адрес той ноды, в которой находится этот файл
+    connect_address: {{ ansible_default_ipv4.address }}:8008 # адрес той ноды, в которой находится этот файл
 
 etcd:
-    hosts: 192.168.1.11:2379,192.168.1.12:2379,192.168.1.13:2379 # перечислите здесь все ваши ноды, в случае если вы устанавливаете etcd на них же
+    hosts: {{ host1 }}:{{ etcd_client_port }},{{ host2 }}:{{ etcd_client_port }},{{ host3 }}:{{ etcd_client_port }} # перечислите здесь все ваши ноды, в случае если вы устанавливаете etcd на них же
 
 # this section (bootstrap) will be written into Etcd:/<namespace>/<scope>/config after initializing new cluster
 # and all other cluster members will use it as a `global configuration`
@@ -36,9 +36,9 @@ bootstrap:
     pg_hba:
     - host replication postgres ::1/128 md5
     - host replication postgres 127.0.0.1/8 md5
-    - host replication postgres 192.168.1.11/24 md5
-    - host replication postgres 192.168.1.12/24 md5
-    - host replication postgres 192.168.1.13/24 md5
+    - host replication postgres {{ host1 }}/24 md5
+    - host replication postgres {{ host2 }}/24 md5
+    - host replication postgres {{ host3 }}/24 md5
     - host all all 0.0.0.0/0 md5
 
     users:
@@ -49,18 +49,18 @@ bootstrap:
                 - createdb
 
 postgresql:
-    listen: 192.168.1.11:5432 # адрес той ноды, в которой находится этот файл
-    connect_address: 192.168.1.11:5432 # адрес той ноды, в которой находится этот файл
+    listen: {{ ansible_default_ipv4.address }}:{{ db_port }} # адрес той ноды, в которой находится этот файл
+    connect_address: {{ ansible_default_ipv4.address }}:{{ db_port }} # адрес той ноды, в которой находится этот файл
     data_dir: /data/patroni # эту директорию создаст скрипт, описанный выше и установит нужные права
     bin_dir:  /usr/lib/postgresql/14/bin # укажите путь до вашей директории с postgresql
     pgpass: /tmp/pgpass
     authentication:
         replication:
-            username: postgres
-            password: postgres
+            username: {{ db_user }}
+            password: {{ db_pass }}
         superuser:
-            username: postgres
-            password: postgres
+            username: {{ db_user }}
+            password: {{ db_pass }}
     create_replica_methods:
         basebackup:
             checkpoint: 'fast'
@@ -72,3 +72,4 @@ tags:
     noloadbalance: false
     clonefrom: false
     nosync: false
+    

@@ -10,15 +10,15 @@
     - libpq-dev
     state: latest
   
-- name: install pip psycop2 patroni[etcd]
+- name: install pip psycopg2 patroni[etcd]
   become_user: root
   shell: |
     pip3 install --upgrade pip
-    pip install psycop2
+    pip install psycopg2
     pip install patroni[etcd]
 - name: make /data/patroni directory
   file:
-    path: /data/patroni2
+    path: /data/patroni
     state: directory
     mode: '0700'
     owner: postgres
@@ -27,12 +27,13 @@
   block:
     - name: etc/systemd/system/patroni.service config
       template:
-        src: etc/systemd/system/patroni.service
-        dest: /etc/systemd/system/patroni.service2
+        src: etc/systemd/system/patroni.service.j2
+        dest: /etc/systemd/system/patroni.service
     - name: etc/patroni.yml config
       template:
-        src: etc/patroni.yml
-        dest: /etc/patroni.yml2
+        src: etc/patroni.yml.j2
+        dest: /etc/patroni.yml
   notify: actions
+  
   
 

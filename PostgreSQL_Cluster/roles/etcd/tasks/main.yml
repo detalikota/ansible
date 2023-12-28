@@ -11,12 +11,12 @@
   block:
     - name: etcd configuration file
       template:
-        src: etc/etcd
-        dest: /etc/etcd2
+        src: etc/etcd.j2
+        dest: /etc/etcd
     - name: etcd service configuration file
       template:
-        src: etc/systemd/system/etcd.service
-        dest: /etc/systemd/system/etcd.service2
+        src: etc/systemd/system/etcd.service.j2
+        dest: /etc/systemd/system/etcd.service
   notify: restart daemon and etcd
 - name: start etcd
   service:

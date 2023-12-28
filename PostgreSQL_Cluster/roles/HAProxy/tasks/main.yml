@@ -1,0 +1,53 @@
+- name: delete conflicting docker packages
+  shell:
+    cmd: for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+- name: update repository index
+  apt:
+    update_cache: yes
+- name: install ca-certificates curl gnupg
+  apt:
+    pkg:
+    - ca-certificates
+    - curl
+    - gnupg
+- name: install keyrings
+  become_user: root
+  shell: 
+    cmd: install -m 0755 -d /etc/apt/keyrings
+- name: install certificates
+  become_user: root
+  shell: 
+    cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+- name: chmod on keyrings
+  become_user: root
+  shell: 
+    cmd: chmod a+r /etc/apt/keyrings/docker.gpg
+- name: Create /home/maga/Docker directory if doesn't exist
+  file:
+    path: /home/maga/Docker
+    state: directory
+- name: add new repository to apt sources
+  shell:
+    cmd: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+- name: update repository index
+  apt:
+    update_cache: yes
+- name: install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  apt:
+    pkg:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+- name: Copy files and create Docker image 
+  block:
+    - name: Dockerfile
+      template:
+        src: home/maga/Docker/Dockerfile
+        dest: /home/maga/Docker/Dockerfile
+    - name: etcd service configuration file
+      template:
+        src: home/maga/Docker/haproxy.cfg.j2
+        dest: /home/maga/Docker/haproxy.cfg
+  notify: restart container

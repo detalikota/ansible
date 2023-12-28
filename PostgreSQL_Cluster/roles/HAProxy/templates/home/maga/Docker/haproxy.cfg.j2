@@ -1,0 +1,27 @@
+global
+    maxconn {{ max_conn }}
+
+defaults
+    log global
+    mode tcp
+    retries 2
+    timeout client 30m
+    timeout connect 4s
+    timeout server 30m
+    timeout check 5s
+
+listen stats
+    mode http
+    bind *:7000
+    stats enable
+    stats uri /
+
+listen postgres
+    bind *:5000
+    option httpchk
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+    server {{ HAProxy_server_name_1 }} {{ host1 }}:{{ db_port }} maxconn {{ max_conn }} check port 8008
+    server {{ HAProxy_server_name_2 }} {{ host2 }}:{{ db_port }} maxconn {{ max_conn }} check port 8008
+    server {{ HAProxy_server_name_3 }} {{ host3 }}:{{ db_port }} maxconn {{ max_conn }} check port 8008
+

@@ -8,8 +8,16 @@ etcd_client_port: 2379
 etcd_peer_port: 2380
 
 #PostgreSQL
-
-#HAProxy
+db_user: postgres
+db_pass: postgres
+db_port: 5432
 
 #Patroni
+patroni_user: postgres
+patroni_group: postgres
 
+#HAProxy
+HAProxy_server_name_1: postgresql1
+HAProxy_server_name_2: postgresql2
+HAProxy_server_name_3: postgresql3
+max_conn: 50

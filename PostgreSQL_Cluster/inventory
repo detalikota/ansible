@@ -4,10 +4,10 @@
 192.168.1.13 mark=host3
 
 [server1]
-192.168.1.11
+192.168.1.11 name_in_cluster=postgres1 etcd_name=etcd1
 
 [server2]
-192.168.1.12
+192.168.1.12 name_in_cluster=postgres2 etcd_name=etcd2
 
 [server3]
-192.168.1.13
+192.168.1.13 name_in_cluster=postgres3 etcd_name=etcd3
