@@ -22,4 +22,3 @@
   service:
     name: etcd
     state: started
-  
