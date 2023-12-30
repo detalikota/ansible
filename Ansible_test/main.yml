@@ -48,3 +48,19 @@
         - etcdctl
         - etcdutl
       when: ansible_facts['distribution_file_variety'] == "CentOS"
+    - name: install postgresql postgresql-contrib python3-pip libpq-dev
+      become_user: root
+      apt:
+        name:
+        - postgresql
+        - postgresql-contrib
+        - python3-pip
+        - libpq-dev
+        state: latest
+      
+    - name: install pip psycopg2 patroni[etcd]
+      become_user: root
+      shell: |
+        pip3 install --upgrade pip
+        pip install psycopg2
+        pip install patroni[etcd]    

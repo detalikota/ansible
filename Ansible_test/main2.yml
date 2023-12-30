@@ -1,0 +1,29 @@
+---
+
+- name: testing
+  hosts: test
+  tasks:
+    - name: install postgresql postgresql-contrib python3-pip postgresql-libs
+      become_user: root
+      yum:
+        name:
+          - postgresql
+          - postgresql-contrib
+          - python3-pip
+          - postgresql-libs
+          - python3-devel
+          - postgresql-devel
+        state: latest
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
+      
+    - name: install pip psycopg2 patroni[etcd]
+      become_user: root
+      pip:
+        name:
+          - psycopg2
+          - patroni[etcd]
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
+#      shell: |
+#        pip3 install --upgrade pip
+#        pip install psycopg2
+#        pip install patroni[etcd]   
