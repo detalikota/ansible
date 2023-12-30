@@ -1,11 +1,7 @@
 ---
 
-- hosts: all 
-  roles:
-    - role: common
-#- hosts: first_server
-#  roles:
-#    - role: first
-#- hosts: second_server
-#    - role: second
-
+- name: testing
+  hosts: test
+  tasks:
+    - name: first task
+      shell: rm lol2 lol
