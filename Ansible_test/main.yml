@@ -3,5 +3,48 @@
 - name: testing
   hosts: test
   tasks:
-    - name: first task
-      shell: rm lol2 lol
+
+    - name: update repository index (if Debian)
+      apt:
+        update_cache: yes
+      when: ansible_facts['distribution_file_variety'] == "Debian"
+
+    - name: install etcd package (if Debian)
+      apt:
+        name: etcd
+        state: latest
+      when: ansible_facts['distribution_file_variety'] == "Debian"
+
+    - name: update repository index (if CentOS)
+      yum:
+        update_cache: yes
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
+
+    - name: set etcd_release version variable (if CentOS)
+      shell: curl -s https://api.github.com/repos/etcd-io/etcd/releases/latest|grep tag_name | cut -d '"' -f 4
+      register: etcd_release
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
+
+    - name: Download file using etcd_release var (if CentOS)
+      get_url:
+        url: https://github.com/etcd-io/etcd/releases/download/{{ etcd_release.stdout }}/etcd-{{ etcd_release.stdout }}-linux-amd64.tar.gz
+        dest: /home/maga/file.tar.gz
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
+
+    - name: unzip
+      unarchive:
+        src: /home/maga/file.tar.gz
+        dest: /home/maga/testing
+        remote_src: yes
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
+
+    - name: move binary files to /usr/bin/
+      copy:
+        src: /home/maga/testing/etcd-{{ etcd_release.stdout }}-linux-amd64/{{ item }}
+        dest: /usr/bin/
+        remote_src: yes
+      loop:
+        - etcd
+        - etcdctl
+        - etcdutl
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
