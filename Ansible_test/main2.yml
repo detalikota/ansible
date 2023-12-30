@@ -3,6 +3,7 @@
 - name: testing
   hosts: test
   tasks:
+
     - name: install postgresql postgresql-contrib python3-pip postgresql-libs
       become_user: root
       yum:
@@ -23,7 +24,30 @@
           - psycopg2
           - patroni[etcd]
       when: ansible_facts['distribution_file_variety'] == "CentOS"
-#      shell: |
-#        pip3 install --upgrade pip
-#        pip install psycopg2
-#        pip install patroni[etcd]   
+    - name: uninstall old docker dependencies
+      yum:
+        name: 
+          - docker
+          - docker-client
+          - docker-client-latest
+          - docker-common
+          - docker-latest
+          - docker-latest-logrotate
+          - docker-logrotate
+          - docker-engine
+        state: absent
+    - name: install yum-utils
+      yum:
+        name: yum-utils
+        state: latest
+    - name: install docker repository
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    - name: install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+      
