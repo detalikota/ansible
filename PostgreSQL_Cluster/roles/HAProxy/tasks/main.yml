@@ -83,8 +83,6 @@
       - docker-compose-plugin
   when: ansible_facts['distribution_file_variety'] == "CentOS"
 
-
-
 - name: Create /home/maga/Docker directory if doesn't exist
   file:
     path: /home/maga/Docker
