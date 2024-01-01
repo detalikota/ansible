@@ -1,3 +1,9 @@
+- name: start docker
+  systemd_service:
+    name: docker
+    state: started
+  when: ansible_facts['distribution_file_variety'] == "CentOS"
+
 - name: remove container
   docker_container:
     name: my-haproxy
@@ -24,8 +30,3 @@
   listen: restart container
 
   
-#
-#- name: start container
-#  shell: docker run --name my-haproxy -d -p5000:5000 -p7000:7000 my-haproxy
-#  listen: restart container
-#

@@ -1,9 +1,3 @@
-- name: Install aptitude
-  apt:
-    name: aptitude
-    state: latest
-    update_cache: true
-  when: ansible_facts['distribution_file_variety'] == "Debian"
 - name: uninstall old docker dependencies
   apt:
     name: 
@@ -24,18 +18,25 @@
     pkg:
     - ca-certificates
     - curl
-    - apt-transport-https
-    - software-properties-common
+    - gnupg
   when: ansible_facts['distribution_file_variety'] == "Debian"
-- name: Add Docker GPG apt Key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
+- name: install keyrings
+  become_user: root
+  shell: 
+    cmd: install -m 0755 -d /etc/apt/keyrings
   when: ansible_facts['distribution_file_variety'] == "Debian"
-- name: Add Docker Repository
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu focal stable
-    state: present
+- name: install certificates
+  become_user: root
+  command: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg"
+  when: ansible_facts['distribution_file_variety'] == "Debian"
+- name: chmod on keyrings
+  become_user: root
+  shell: 
+    cmd: chmod a+r /etc/apt/keyrings/docker.gpg
+  when: ansible_facts['distribution_file_variety'] == "Debian"
+- name: add new repository to apt sources
+  shell:
+    cmd: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   when: ansible_facts['distribution_file_variety'] == "Debian"
 - name: update repository index
   apt:
@@ -72,7 +73,6 @@
   when: ansible_facts['distribution_file_variety'] == "CentOS"
 - name: install docker repository
   shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  when: ansible_facts['distribution_file_variety'] == "CentOS"
 - name: install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   yum:
     name:

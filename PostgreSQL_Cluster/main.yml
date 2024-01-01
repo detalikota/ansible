@@ -10,6 +10,6 @@
   roles:
     - db_patroni
 
-- hosts: server1
+- hosts: all
   roles:
   - HAProxy

@@ -1,7 +1,7 @@
 #list hosts for cluster
 host1: 192.168.1.11
 host2: 192.168.1.12
-host3: 192.168.1.13
+host3: 192.168.1.14
 
 #etcd 
 etcd_client_port: 2379
@@ -20,4 +20,4 @@ patroni_group: postgres
 HAProxy_server_name_1: postgresql1
 HAProxy_server_name_2: postgresql2
 HAProxy_server_name_3: postgresql3
-max_conn: 50
+max_conn: 100
