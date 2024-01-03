@@ -4,10 +4,10 @@
 192.168.1.14 mark=host3
 
 [server1]
-192.168.1.11 name_in_cluster=postgres1 etcd_name=etcd1
+192.168.1.11 name_in_cluster=postgres1 etcd_name=etcd1 keepalived_priority=255 keepalived_state=MASTER
 
 [server2]
-192.168.1.12 name_in_cluster=postgres2 etcd_name=etcd2
+192.168.1.12 name_in_cluster=postgres2 etcd_name=etcd2 keepalived_priority=254 keepalived_state=BACKUP
 
 [server3]
-192.168.1.14 name_in_cluster=postgres3 etcd_name=etcd3
+192.168.1.14 name_in_cluster=postgres3 etcd_name=etcd3 keepalived_priority=253 keepalived_state=BACKUP

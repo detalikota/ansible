@@ -30,10 +30,10 @@
     dest: /home/maga/testing
     remote_src: yes
   when: ansible_facts['distribution_file_variety'] == "CentOS"
-- name: move binary files to /usr/bin/
+- name: move binary files to /usr/local/bin/
   copy:
     src: /home/maga/testing/etcd-{{ etcd_release.stdout }}-linux-amd64/{{ item }}
-    dest: /usr/bin/
+    dest: /usr/local/bin/
     remote_src: yes
   loop:
     - etcd
@@ -49,8 +49,14 @@
         dest: /etc/etcd
     - name: etcd service configuration file
       template:
-        src: etc/systemd/system/etcd.service.j2
+        src: etc/systemd/system/etcd.service.Debian.j2
         dest: /etc/systemd/system/etcd.service
+      when: ansible_facts['distribution_file_variety'] == "Debian"
+    - name: etcd service configuration file
+      template:
+        src: etc/systemd/system/etcd.service.CentOS.j2
+        dest: /etc/systemd/system/etcd.service
+      when: ansible_facts['distribution_file_variety'] == "CentOS"
   notify: restart daemon and etcd
 - name: start etcd
   service:

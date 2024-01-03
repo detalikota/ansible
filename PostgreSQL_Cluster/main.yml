@@ -13,3 +13,4 @@
 - hosts: all
   roles:
   - HAProxy
+  - keepalived
