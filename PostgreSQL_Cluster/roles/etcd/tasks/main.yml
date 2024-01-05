@@ -1,5 +1,4 @@
 ---
-
 - name: update repository index (Debian)
   apt:
     update_cache: yes
@@ -14,7 +13,7 @@
     name: etcd
     state: latest
   when: ansible_facts['distribution_file_variety'] == "Debian"
-  
+
 - name: set etcd_release version variable (if CentOS)
   shell: curl -s https://api.github.com/repos/etcd-io/etcd/releases/latest|grep tag_name | cut -d '"' -f 4
   register: etcd_release
@@ -58,11 +57,26 @@
         dest: /etc/systemd/system/etcd.service
       when: ansible_facts['distribution_file_variety'] == "CentOS"
   notify: restart daemon and etcd
+- name: chmod to etcd for CentOS
+  file:
+    path: /usr/local/bin/etcd
+    mode: "0777"
+  when: ansible_facts['distribution_file_variety'] == "CentOS"
 - name: start etcd
   service:
     name: etcd
     state: started
   become_user: root
-
-
-
+- name: open ports on CentOS
+  ansible.posix.firewalld:
+    port: "{{ item }}/tcp"
+    state: enabled
+    immediate: true
+    permanent: true
+  loop:
+    - 2379
+    - 2380
+    - 8008
+    - 5432
+    - 5000
+  when: ansible_facts['distribution_file_variety'] == "CentOS"

@@ -14,6 +14,7 @@
 - name: init db
   shell: /usr/bin/postgresql-setup --initdb
   when: ansible_facts['distribution_file_variety'] == "CentOS"
+  listen: actions
 - name: restart db
   systemd_service:
     name: postgresql
