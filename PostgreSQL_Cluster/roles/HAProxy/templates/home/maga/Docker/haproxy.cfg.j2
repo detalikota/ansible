@@ -25,3 +25,4 @@ listen postgres
     server {{ HAProxy_server_name_2 }} {{ host2 }}:{{ db_port }} maxconn {{ max_conn }} check port 8008
     server {{ HAProxy_server_name_3 }} {{ host3 }}:{{ db_port }} maxconn {{ max_conn }} check port 8008
 
+

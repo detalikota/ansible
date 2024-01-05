@@ -27,12 +27,12 @@
 - name: unzip
   unarchive:
     src: /home/maga/file.tar.gz
-    dest: /home/maga/testing
+    dest: /home/maga
     remote_src: yes
   when: ansible_facts['distribution_file_variety'] == "CentOS"
 - name: move binary files to /usr/local/bin/
   copy:
-    src: /home/maga/testing/etcd-{{ etcd_release.stdout }}-linux-amd64/{{ item }}
+    src: /home/maga/etcd-{{ etcd_release.stdout }}-linux-amd64/{{ item }}
     dest: /usr/local/bin/
     remote_src: yes
   loop:
@@ -62,6 +62,7 @@
   service:
     name: etcd
     state: started
+  become_user: root
 
 
 

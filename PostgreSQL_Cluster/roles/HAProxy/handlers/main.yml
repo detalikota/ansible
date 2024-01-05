@@ -5,6 +5,7 @@
     name: docker
     state: started
   when: ansible_facts['distribution_file_variety'] == "CentOS"
+  listen: restart container
 
 - name: remove container
   docker_container:

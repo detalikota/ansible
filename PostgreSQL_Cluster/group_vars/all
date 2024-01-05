@@ -20,7 +20,7 @@ patroni_group: postgres
 HAProxy_server_name_1: postgresql1
 HAProxy_server_name_2: postgresql2
 HAProxy_server_name_3: postgresql3
-max_conn: 100
+max_conn: 50
 
 #keepalived
 router_id: 51

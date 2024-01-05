@@ -28,7 +28,7 @@
   become_user: root
   pip:
     name:
-      - psycopg2
+      - psycopg2-binary
       - patroni[etcd]
 
 - name: make /data/patroni directory
